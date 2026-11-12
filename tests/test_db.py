@@ -124,11 +124,11 @@ def run_verification(results):
         "SELECT table_name FROM information_schema.tables WHERE table_schema = %s",
         (db.DB_CONFIG["database"],),
     )
-    present = {r[next(iter(r))] for r in rows}
+    present = {r[next(iter(r))].lower() for r in rows}
     for table in EXPECTED_TABLES:
-        results.check(f"table exists: {table}", table in present)
+        results.check(f"table exists: {table}", table.lower() in present)
 
-    if not all(t in present for t in EXPECTED_TABLES):
+    if not all(t.lower() in present for t in EXPECTED_TABLES):
         return False  # stop; nothing else can be verified
 
     # A2 all tables use InnoDB
